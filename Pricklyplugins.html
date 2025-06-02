@@ -1,0 +1,1191 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Prickly Plugins - Minecraft Plugin Collection</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        :root {
+            --primary: #c27aae;
+            --secondary: #7a8fcc;
+            --dark: #121212;
+            --darker: #0a0a0a;
+            --light: #f8f9fa;
+            --danger: #ff4d4d;
+            --warning: #ffcc00;
+        }
+        
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            transition: all 0.3s ease;
+        }
+        
+        body {
+            font-family: 'Segoe UI', 'Roboto', sans-serif;
+            background-color: var(--dark);
+            color: var(--light);
+            overflow-x: hidden;
+        }
+        
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 20px;
+        }
+        
+        header {
+            background: linear-gradient(135deg, var(--darker), #1a1a2e);
+            padding: 20px 0;
+            box-shadow: 0 4px 30px rgba(0, 0, 0, 0.3);
+            position: relative;
+            overflow: hidden;
+            border-bottom: 2px solid var(--primary);
+        }
+        
+        header::before {
+            content: "";
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: url('data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" width="100" height="100" viewBox="0 0 100 100"><path fill="%23c27aae" d="M30,10L50,30L70,10L90,30L70,50L90,70L70,90L50,70L30,90L10,70L30,50L10,30L30,10Z"/></svg>') center/cover;
+            opacity: 0.05;
+            z-index: 0;
+        }
+        
+        .header-content {
+            position: relative;
+            z-index: 1;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            flex-wrap: wrap;
+        }
+        
+        .logo {
+            display: flex;
+            align-items: center;
+            gap: 15px;
+        }
+        
+        .logo i {
+            font-size: 2.5rem;
+            color: var(--primary);
+            animation: pulse 2s infinite;
+        }
+        
+        .logo-text h1 {
+            font-size: 2rem;
+            background: linear-gradient(to right, var(--primary), var(--secondary));
+            -webkit-background-clip: text;
+            background-clip: text;
+            color: transparent;
+            font-weight: 800;
+        }
+        
+        .logo-text p {
+            font-size: 0.9rem;
+            opacity: 0.8;
+        }
+        
+        .search-bar {
+            flex-grow: 1;
+            max-width: 500px;
+            margin: 20px;
+            position: relative;
+        }
+        
+        .search-bar input {
+            width: 100%;
+            padding: 12px 20px;
+            border-radius: 50px;
+            border: none;
+            background: rgba(255, 255, 255, 0.1);
+            color: white;
+            font-size: 1rem;
+            backdrop-filter: blur(10px);
+            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.2);
+        }
+        
+        .search-bar input:focus {
+            outline: none;
+            background: rgba(255, 255, 255, 0.15);
+            box-shadow: 0 0 0 2px var(--primary);
+        }
+        
+        .search-bar i {
+            position: absolute;
+            right: 20px;
+            top: 50%;
+            transform: translateY(-50%);
+            color: var(--light);
+            opacity: 0.7;
+        }
+        
+        .theme-toggle {
+            background: rgba(255, 255, 255, 0.1);
+            border: none;
+            width: 50px;
+            height: 50px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+            color: var(--light);
+            font-size: 1.2rem;
+            backdrop-filter: blur(5px);
+            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.2);
+        }
+        
+        .theme-toggle:hover {
+            background: rgba(255, 255, 255, 0.2);
+            transform: rotate(30deg);
+        }
+        
+        .main-content {
+            padding: 30px 0;
+        }
+        
+        .plugin-section {
+            margin-bottom: 50px;
+            animation: fadeIn 0.5s ease-out;
+        }
+        
+        .section-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 20px;
+            padding-bottom: 10px;
+            border-bottom: 2px solid rgba(255, 255, 255, 0.1);
+        }
+        
+        .section-header h2 {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            font-size: 1.8rem;
+            color: var(--light);
+        }
+        
+        .section-header i {
+            color: var(--primary);
+        }
+        
+        .section-controls {
+            display: flex;
+            gap: 10px;
+        }
+        
+        .section-controls button {
+            background: rgba(255, 255, 255, 0.1);
+            border: none;
+            padding: 8px 15px;
+            border-radius: 50px;
+            color: var(--light);
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            gap: 5px;
+            font-size: 0.9rem;
+        }
+        
+        .section-controls button:hover {
+            background: var(--primary);
+        }
+        
+        .plugin-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+            gap: 20px;
+        }
+        
+        .plugin-card {
+            background: linear-gradient(145deg, #1e1e1e, #2a2a2a);
+            border-radius: 12px;
+            padding: 20px;
+            box-shadow: 0 8px 25px rgba(0, 0, 0, 0.3);
+            transition: all 0.3s ease;
+            cursor: pointer;
+            position: relative;
+            overflow: hidden;
+            border-left: 4px solid var(--primary);
+        }
+        
+        .plugin-card::before {
+            content: "";
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            height: 4px;
+            background: linear-gradient(to right, var(--primary), var(--secondary));
+            opacity: 0;
+            transition: opacity 0.3s ease;
+        }
+        
+        .plugin-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 12px 30px rgba(0, 0, 0, 0.4);
+        }
+        
+        .plugin-card:hover::before {
+            opacity: 1;
+        }
+        
+        .plugin-card.paid::after {
+            content: "PREMIUM";
+            position: absolute;
+            top: 10px;
+            right: -25px;
+            background: var(--warning);
+            color: #000;
+            padding: 3px 30px;
+            font-size: 0.7rem;
+            font-weight: bold;
+            transform: rotate(45deg);
+            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.3);
+        }
+        
+        .plugin-card h3 {
+            margin-bottom: 10px;
+            color: var(--light);
+            font-size: 1.3rem;
+        }
+        
+        .plugin-card .plugin-meta {
+            display: flex;
+            justify-content: space-between;
+            margin-bottom: 15px;
+            font-size: 0.9rem;
+            opacity: 0.7;
+        }
+        
+        .plugin-card .plugin-desc {
+            margin-bottom: 15px;
+            line-height: 1.5;
+            opacity: 0.9;
+        }
+        
+        .plugin-card .plugin-footer {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+        
+        .plugin-card .plugin-tags {
+            display: flex;
+            gap: 5px;
+            flex-wrap: wrap;
+        }
+        
+        .plugin-card .plugin-tag {
+            background: rgba(122, 143, 204, 0.2);
+            color: var(--secondary);
+            padding: 3px 8px;
+            border-radius: 50px;
+            font-size: 0.7rem;
+        }
+        
+        .plugin-card .plugin-link {
+            color: var(--primary);
+            text-decoration: none;
+            font-weight: bold;
+            display: flex;
+            align-items: center;
+            gap: 5px;
+        }
+        
+        .plugin-card .plugin-link:hover {
+            color: var(--secondary);
+        }
+        
+        .coming-soon-banner {
+            background: linear-gradient(135deg, var(--darker), #2a1a2e);
+            padding: 15px;
+            border-radius: 10px;
+            margin-bottom: 30px;
+            text-align: center;
+            border: 2px dashed var(--primary);
+            animation: pulseBorder 2s infinite;
+        }
+        
+        .coming-soon-banner h3 {
+            color: var(--primary);
+            margin-bottom: 10px;
+            font-size: 1.5rem;
+        }
+        
+        .coming-soon-banner p {
+            opacity: 0.8;
+        }
+        
+        .popup {
+            display: none;
+            position: fixed;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%) scale(0.9);
+            background: linear-gradient(145deg, #1e1e1e, #2a2a2a);
+            color: white;
+            padding: 30px;
+            border-radius: 15px;
+            box-shadow: 0 0 40px rgba(0, 0, 0, 0.5);
+            z-index: 1000;
+            width: 90%;
+            max-width: 600px;
+            opacity: 0;
+            transition: all 0.3s ease;
+            border-top: 5px solid var(--primary);
+        }
+        
+        .popup.active {
+            display: block;
+            transform: translate(-50%, -50%) scale(1);
+            opacity: 1;
+        }
+        
+        .popup-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 20px;
+            padding-bottom: 10px;
+            border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+        }
+        
+        .popup-header h3 {
+            font-size: 1.8rem;
+            color: var(--light);
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+        
+        .popup-header .close-btn {
+            background: rgba(255, 255, 255, 0.1);
+            border: none;
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+            color: var(--light);
+            font-size: 1.2rem;
+        }
+        
+        .popup-header .close-btn:hover {
+            background: var(--danger);
+            transform: rotate(90deg);
+        }
+        
+        .popup-body {
+            margin-bottom: 20px;
+            line-height: 1.6;
+        }
+        
+        .popup-meta {
+            display: flex;
+            justify-content: space-between;
+            margin-bottom: 15px;
+            font-size: 0.9rem;
+            opacity: 0.8;
+        }
+        
+        .popup-footer {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-top: 20px;
+            padding-top: 15px;
+            border-top: 1px solid rgba(255, 255, 255, 0.1);
+        }
+        
+        .popup-tags {
+            display: flex;
+            gap: 8px;
+            flex-wrap: wrap;
+        }
+        
+        .popup-tag {
+            background: rgba(122, 143, 204, 0.2);
+            color: var(--secondary);
+            padding: 5px 10px;
+            border-radius: 50px;
+            font-size: 0.8rem;
+        }
+        
+        .popup-actions {
+            display: flex;
+            gap: 10px;
+        }
+        
+        .popup-btn {
+            padding: 8px 15px;
+            border-radius: 50px;
+            border: none;
+            cursor: pointer;
+            font-weight: bold;
+            display: flex;
+            align-items: center;
+            gap: 5px;
+        }
+        
+        .popup-btn.primary {
+            background: var(--primary);
+            color: white;
+        }
+        
+        .popup-btn.secondary {
+            background: rgba(255, 255, 255, 0.1);
+            color: white;
+        }
+        
+        .popup-btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 4px 10px rgba(0, 0, 0, 0.2);
+        }
+        
+        .overlay {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            backdrop-filter: blur(8px);
+            background: rgba(0, 0, 0, 0.7);
+            z-index: 999;
+        }
+        
+        .overlay.active {
+            display: block;
+        }
+        
+        footer {
+            background: linear-gradient(135deg, var(--darker), #1a1a2e);
+            padding: 30px 0;
+            margin-top: 50px;
+            border-top: 2px solid rgba(255, 255, 255, 0.1);
+        }
+        
+        .footer-content {
+            display: flex;
+            justify-content: space-between;
+            flex-wrap: wrap;
+            gap: 30px;
+        }
+        
+        .footer-section {
+            flex: 1;
+            min-width: 250px;
+        }
+        
+        .footer-section h3 {
+            margin-bottom: 15px;
+            color: var(--light);
+            font-size: 1.2rem;
+        }
+        
+        .footer-section p {
+            opacity: 0.7;
+            line-height: 1.6;
+            margin-bottom: 15px;
+        }
+        
+        .footer-links {
+            list-style: none;
+        }
+        
+        .footer-links li {
+            margin-bottom: 10px;
+        }
+        
+        .footer-links a {
+            color: var(--light);
+            text-decoration: none;
+            opacity: 0.7;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+        
+        .footer-links a:hover {
+            opacity: 1;
+            color: var(--primary);
+        }
+        
+        .social-links {
+            display: flex;
+            gap: 15px;
+            margin-top: 20px;
+        }
+        
+        .social-links a {
+            color: var(--light);
+            background: rgba(255, 255, 255, 0.1);
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1.2rem;
+        }
+        
+        .social-links a:hover {
+            background: var(--primary);
+            transform: translateY(-3px);
+        }
+        
+        .copyright {
+            text-align: center;
+            margin-top: 30px;
+            padding-top: 20px;
+            border-top: 1px solid rgba(255, 255, 255, 0.1);
+            opacity: 0.6;
+            font-size: 0.9rem;
+        }
+        
+        .floating-btn {
+            position: fixed;
+            bottom: 30px;
+            right: 30px;
+            background: var(--primary);
+            color: white;
+            width: 60px;
+            height: 60px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1.5rem;
+            box-shadow: 0 4px 20px rgba(0, 0, 0, 0.3);
+            cursor: pointer;
+            z-index: 99;
+            border: none;
+        }
+        
+        .floating-btn:hover {
+            transform: scale(1.1) rotate(15deg);
+            background: var(--secondary);
+        }
+        
+        /* Animations */
+        @keyframes pulse {
+            0% { transform: scale(1); }
+            50% { transform: scale(1.1); }
+            100% { transform: scale(1); }
+        }
+        
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(20px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+        
+        @keyframes float {
+            0% { transform: translateY(0px); }
+            50% { transform: translateY(-10px); }
+            100% { transform: translateY(0px); }
+        }
+        
+        @keyframes pulseBorder {
+            0% { border-color: var(--primary); }
+            50% { border-color: var(--secondary); }
+            100% { border-color: var(--primary); }
+        }
+        
+        /* Responsive */
+        @media (max-width: 768px) {
+            .header-content {
+                flex-direction: column;
+                text-align: center;
+                gap: 20px;
+            }
+            
+            .search-bar {
+                width: 100%;
+                margin: 20px 0;
+            }
+            
+            .plugin-grid {
+                grid-template-columns: repeat(auto-fill, minmax(250px, 1fr));
+            }
+        }
+        
+        /* Dark/Light mode */
+        body.light-mode {
+            background-color: #f5f5f5;
+            color: #333;
+        }
+        
+        body.light-mode header,
+        body.light-mode footer,
+        body.light-mode .plugin-card,
+        body.light-mode .popup,
+        body.light-mode .coming-soon-banner {
+            background: linear-gradient(145deg, #ffffff, #f0f0f0);
+            color: #333;
+        }
+        
+        body.light-mode .plugin-card,
+        body.light-mode .popup {
+            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
+        }
+        
+        body.light-mode .plugin-card h3,
+        body.light-mode .popup-header h3,
+        body.light-mode .footer-section h3,
+        body.light-mode .coming-soon-banner h3 {
+            color: #333;
+        }
+        
+        body.light-mode .search-bar input {
+            background: rgba(0, 0, 0, 0.05);
+            color: #333;
+        }
+        
+        body.light-mode .section-header {
+            border-bottom: 2px solid rgba(0, 0, 0, 0.1);
+        }
+        
+        body.light-mode .plugin-card .plugin-link,
+        body.light-mode .footer-links a {
+            color: var(--primary);
+        }
+        
+        body.light-mode .footer-links a:hover {
+            color: var(--secondary);
+        }
+        
+        body.light-mode .coming-soon-banner {
+            border: 2px dashed var(--primary);
+        }
+    </style>
+</head>
+<body>
+    <header>
+        <div class="container">
+            <div class="header-content">
+                <div class="logo">
+                    <i class="fas fa-cactus"></i>
+                    <div class="logo-text">
+                        <h1>Prickly Plugins</h1>
+                        <p>Sharp solutions for your Minecraft server</p>
+                    </div>
+                </div>
+                
+                <div class="search-bar">
+                    <input type="text" placeholder="Search plugins..." id="searchInput">
+                    <i class="fas fa-search"></i>
+                </div>
+                
+                <button class="theme-toggle" id="themeToggle">
+                    <i class="fas fa-moon"></i>
+                </button>
+            </div>
+        </div>
+    </header>
+    
+    <div class="container">
+        <div class="main-content">
+            <div class="coming-soon-banner">
+                <h3><i class="fas fa-wrench"></i> Custom Configs Coming Soon!</h3>
+                <p>We're working on easy-to-use custom configuration files for all plugins. Stay tuned!</p>
+            </div>
+            
+            <div class="plugin-section">
+                <div class="section-header">
+                    <h2><i class="fas fa-bolt"></i> Must-have Plugins</h2>
+                    <div class="section-controls">
+                        <button><i class="fas fa-random"></i> Shuffle</button>
+                        <button><i class="fas fa-expand"></i> Expand</button>
+                    </div>
+                </div>
+                
+                <div class="plugin-grid">
+                    <div class="plugin-card" onclick="showPopup('EssentialsX')">
+                        <h3>EssentialsX</h3>
+                        <div class="plugin-meta">
+                            <span><i class="fas fa-code-branch"></i> v2.20.0</span>
+                        </div>
+                        <div class="plugin-desc">Essential commands for your Minecraft server including homes, warps, kits and more.</div>
+                        <div class="plugin-footer">
+                            <div class="plugin-tags">
+                                <span class="plugin-tag">Utilities</span>
+                                <span class="plugin-tag">Core</span>
+                            </div>
+                            <a href="#" class="plugin-link">Details <i class="fas fa-arrow-right"></i></a>
+                        </div>
+                    </div>
+                    
+                    <div class="plugin-card" onclick="showPopup('LuckPerms')">
+                        <h3>LuckPerms</h3>
+                        <div class="plugin-meta">
+                            <span><i class="fas fa-code-branch"></i> v5.4</span>
+                        </div>
+                        <div class="plugin-desc">A permissions plugin with web editor support and powerful features.</div>
+                        <div class="plugin-footer">
+                            <div class="plugin-tags">
+                                <span class="plugin-tag">Permissions</span>
+                                <span class="plugin-tag">Essential</span>
+                            </div>
+                            <a href="#" class="plugin-link">Details <i class="fas fa-arrow-right"></i></a>
+                        </div>
+                    </div>
+                    
+                    <div class="plugin-card" onclick="showPopup('WorldGuard')">
+                        <h3>WorldGuard</h3>
+                        <div class="plugin-meta">
+                            <span><i class="fas fa-code-branch"></i> v7.0.7</span>
+                        </div>
+                        <div class="plugin-desc">Protect your server worlds with regions and powerful flags system.</div>
+                        <div class="plugin-footer">
+                            <div class="plugin-tags">
+                                <span class="plugin-tag">Protection</span>
+                                <span class="plugin-tag">WorldEdit</span>
+                            </div>
+                            <a href="#" class="plugin-link">Details <i class="fas fa-arrow-right"></i></a>
+                        </div>
+                    </div>
+                    
+                    <div class="plugin-card" onclick="showPopup('Vault')">
+                        <h3>Vault</h3>
+                        <div class="plugin-meta">
+                            <span><i class="fas fa-code-branch"></i> v1.7.3</span>
+                        </div>
+                        <div class="plugin-desc">Economy, permission, and chat bridge required by many plugins.</div>
+                        <div class="plugin-footer">
+                            <div class="plugin-tags">
+                                <span class="plugin-tag">API</span>
+                                <span class="plugin-tag">Core</span>
+                            </div>
+                            <a href="#" class="plugin-link">Details <i class="fas fa-arrow-right"></i></a>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="plugin-section">
+                <div class="section-header">
+                    <h2><i class="fas fa-shield-alt"></i> Moderation Plugins</h2>
+                    <div class="section-controls">
+                        <button><i class="fas fa-random"></i> Shuffle</button>
+                        <button><i class="fas fa-expand"></i> Expand</button>
+                    </div>
+                </div>
+                
+                <div class="plugin-grid">
+                    <div class="plugin-card" onclick="showPopup('Vulcan')">
+                        <h3>Vulcan AntiCheat</h3>
+                        <div class="plugin-meta">
+                            <span><i class="fas fa-code-branch"></i> v2.8.5</span>
+                        </div>
+                        <div class="plugin-desc">Advanced anti-cheat system with customizable checks and punishments.</div>
+                        <div class="plugin-footer">
+                            <div class="plugin-tags">
+                                <span class="plugin-tag">Security</span>
+                                <span class="plugin-tag">Anti-Cheat</span>
+                            </div>
+                            <a href="#" class="plugin-link">Details <i class="fas fa-arrow-right"></i></a>
+                        </div>
+                    </div>
+                    
+                    <div class="plugin-card" onclick="showPopup('CoreProtect')">
+                        <h3>CoreProtect</h3>
+                        <div class="plugin-meta">
+                            <span><i class="fas fa-code-branch"></i> v20.3</span>
+                        </div>
+                        <div class="plugin-desc">Fast block logging and rollback system to investigate and undo changes.</div>
+                        <div class="plugin-footer">
+                            <div class="plugin-tags">
+                                <span class="plugin-tag">Logging</span>
+                                <span class="plugin-tag">Rollback</span>
+                            </div>
+                            <a href="#" class="plugin-link">Details <i class="fas fa-arrow-right"></i></a>
+                        </div>
+                    </div>
+                    
+                    <div class="plugin-card paid" onclick="showPopup('StaffPlus')">
+                        <h3>Staff++</h3>
+                        <div class="plugin-meta">
+                            <span><i class="fas fa-code-branch"></i> v3.5.2</span>
+                        </div>
+                        <div class="plugin-desc">All-in-one staff management solution with reports, punishments and more.</div>
+                        <div class="plugin-footer">
+                            <div class="plugin-tags">
+                                <span class="plugin-tag">Moderation</span>
+                                <span class="plugin-tag">Staff</span>
+                            </div>
+                            <a href="#" class="plugin-link">Details <i class="fas fa-arrow-right"></i></a>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="plugin-section">
+                <div class="section-header">
+                    <h2><i class="fas fa-coins"></i> Economy Plugins</h2>
+                    <div class="section-controls">
+                        <button><i class="fas fa-random"></i> Shuffle</button>
+                        <button><i class="fas fa-expand"></i> Expand</button>
+                    </div>
+                </div>
+                
+                <div class="plugin-grid">
+                    <div class="plugin-card" onclick="showPopup('EconomyShopGUI')">
+                        <h3>EconomyShopGUI</h3>
+                        <div class="plugin-meta">
+                            <span><i class="fas fa-code-branch"></i> v2.1.9</span>
+                        </div>
+                        <div class="plugin-desc">Beautiful GUI shop system with item buying/selling and categories.</div>
+                        <div class="plugin-footer">
+                            <div class="plugin-tags">
+                                <span class="plugin-tag">Shop</span>
+                                <span class="plugin-tag">GUI</span>
+                            </div>
+                            <a href="#" class="plugin-link">Details <i class="fas fa-arrow-right"></i></a>
+                        </div>
+                    </div>
+                    
+                    <div class="plugin-card paid" onclick="showPopup('BountySeekers')">
+                        <h3>BountySeekers</h3>
+                        <div class="plugin-meta">
+                            <span><i class="fas fa-code-branch"></i> v1.4.7</span>
+                        </div>
+                        <div class="plugin-desc">Exciting PvP bounty system where players can place bounties on others.</div>
+                        <div class="plugin-footer">
+                            <div class="plugin-tags">
+                                <span class="plugin-tag">PvP</span>
+                                <span class="plugin-tag">Bounty</span>
+                            </div>
+                            <a href="#" class="plugin-link">Details <i class="fas fa-arrow-right"></i></a>
+                        </div>
+                    </div>
+                    
+                    <div class="plugin-card" onclick="showPopup('zAuctionHouse')">
+                        <h3>zAuctionHouse</h3>
+                        <div class="plugin-meta">
+                            <span><i class="fas fa-code-branch"></i> v3.2.1</span>
+                        </div>
+                        <div class="plugin-desc">Auction house system with GUI support for listing and bidding items.</div>
+                        <div class="plugin-footer">
+                            <div class="plugin-tags">
+                                <span class="plugin-tag">Auction</span>
+                                <span class="plugin-tag">Market</span>
+                            </div>
+                            <a href="#" class="plugin-link">Details <i class="fas fa-arrow-right"></i></a>
+                        </div>
+                    </div>
+                    
+                    <div class="plugin-card" onclick="showPopup('CoinsEngine')">
+                        <h3>CoinsEngine</h3>
+                        <div class="plugin-meta">
+                            <span><i class="fas fa-code-branch"></i> v1.2.3</span>
+                        </div>
+                        <div class="plugin-desc">Custom coin system with rewards, leaderboards and shop integration.</div>
+                        <div class="plugin-footer">
+                            <div class="plugin-tags">
+                                <span class="plugin-tag">Currency</span>
+                                <span class="plugin-tag">Economy</span>
+                            </div>
+                            <a href="#" class="plugin-link">Details <i class="fas fa-arrow-right"></i></a>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    
+    <footer>
+        <div class="container">
+            <div class="footer-content">
+                <div class="footer-section">
+                    <h3>About Prickly Plugins</h3>
+                    <p>Sharp solutions for your Minecraft server needs. We provide the best plugins to make your server stand out from the crowd.</p>
+                    <div class="social-links">
+                        <a href="https://discord.gg/FU2YHxxRVU" target="_blank"><i class="fab fa-discord"></i></a>
+                        <a href="#"><i class="fab fa-github"></i></a>
+                    </div>
+                </div>
+                
+                <div class="footer-section">
+                    <h3>Quick Links</h3>
+                    <ul class="footer-links">
+                        <li><a href="#"><i class="fas fa-arrow-right"></i> Home</a></li>
+                        <li><a href="#"><i class="fas fa-arrow-right"></i> All Plugins</a></li>
+                        <li><a href="#"><i class="fas fa-arrow-right"></i> Premium Plugins</a></li>
+                        <li><a href="#"><i class="fas fa-arrow-right"></i> Support</a></li>
+                    </ul>
+                </div>
+                
+                <div class="footer-section">
+                    <h3>Resources</h3>
+                    <ul class="footer-links">
+                        <li><a href="#"><i class="fas fa-arrow-right"></i> Documentation</a></li>
+                        <li><a href="#"><i class="fas fa-arrow-right"></i> Tutorials</a></li>
+                        <li><a href="#"><i class="fas fa-arrow-right"></i> Server Setup Guide</a></li>
+                        <li><a href="#"><i class="fas fa-arrow-right"></i> FAQ</a></li>
+                    </ul>
+                </div>
+            </div>
+            
+            <div class="copyright">
+                <p>&copy; 2023 Prickly Plugins. All rights reserved. Not affiliated with Mojang or Microsoft.</p>
+            </div>
+        </div>
+    </footer>
+    
+    <button class="floating-btn" id="backToTop">
+        <i class="fas fa-arrow-up"></i>
+    </button>
+    
+    <div class="overlay" id="overlay"></div>
+    
+    <div class="popup" id="popup">
+        <div class="popup-header">
+            <h3><i class="fas fa-cube"></i> <span id="popup-title">Plugin Name</span></h3>
+            <button class="close-btn" onclick="closePopup()">
+                <i class="fas fa-times"></i>
+            </button>
+        </div>
+        
+        <div class="popup-body">
+            <div class="popup-meta">
+                <span><i class="fas fa-code-branch"></i> Version <span id="popup-version">1.0.0</span></span>
+            </div>
+            
+            <p id="popup-desc">Plugin description will appear here. This is a detailed explanation of what the plugin does and its key features.</p>
+            
+            <div class="popup-footer">
+                <div class="popup-tags" id="popup-tags">
+                    <span class="popup-tag">Essential</span>
+                    <span class="popup-tag">Utilities</span>
+                </div>
+                
+                <div class="popup-actions">
+                    <a href="#" class="popup-btn secondary" id="docsLink">
+                        <i class="fas fa-book"></i> Docs
+                    </a>
+                    <a href="#" class="popup-btn primary" id="downloadLink" target="_blank">
+                        <i class="fas fa-download"></i> Download
+                    </a>
+                </div>
+            </div>
+        </div>
+    </div>
+    
+    <script>
+        // Plugin data with enhanced information
+        const pluginData = {
+            "EssentialsX": {
+                desc: "EssentialsX is the essential plugin for Minecraft servers, providing must-have commands and features including player homes, warps, kits, and more. It's optimized for modern Minecraft versions and includes performance improvements over the original Essentials.",
+                link: "https://essentialsx.net/downloads.html",
+                version: "2.20.0",
+                tags: ["Utilities", "Core", "Essential"],
+                docs: "https://essentialsx.net/wiki/"
+            },
+            "LuckPerms": {
+                desc: "LuckPerms is a modern permissions plugin with powerful features including group inheritance, prefix/suffix support, web editor integration, and extensive API support. It's designed for high-performance with minimal impact on server performance.",
+                link: "https://luckperms.net/download",
+                version: "5.4",
+                tags: ["Permissions", "Management", "Essential"],
+                docs: "https://luckperms.net/wiki/"
+            },
+            "WorldGuard": {
+                desc: "WorldGuard protects your server worlds with regions and flags system. Prevent griefing, control PvP, restrict block placement, and customize nearly every aspect of world interaction with this powerful protection plugin.",
+                link: "https://enginehub.org/worldguard",
+                version: "7.0.7",
+                tags: ["Protection", "WorldEdit", "Regions"],
+                docs: "https://worldguard.enginehub.org/en/latest/"
+            },
+            "Vault": {
+                desc: "Vault is a required dependency for many plugins, providing a bridge between economy, permission, and chat plugins. It standardizes the API for these systems, allowing plugin compatibility.",
+                link: "https://www.spigotmc.org/resources/vault.34315/",
+                version: "1.7.3",
+                tags: ["API", "Core", "Essential"],
+                docs: "https://github.com/MilkBowl/VaultAPI"
+            },
+            "Vulcan": {
+                desc: "Vulcan is an advanced anti-cheat system with customizable checks for all types of hacks including movement, combat, and exploitation. It features false-positive reduction and detailed violation reports.",
+                link: "https://www.spigotmc.org/resources/vulcan-advanced-anticheat.83626/",
+                version: "2.8.5",
+                tags: ["Security", "Anti-Cheat", "Moderation"],
+                docs: "https://docs.vulcan.ac/"
+            },
+            "CoreProtect": {
+                desc: "CoreProtect quickly logs block and container changes, allowing server staff to investigate and rollback griefing or unwanted changes. It's optimized for performance with minimal server impact.",
+                link: "https://www.spigotmc.org/resources/coreprotect.8631/",
+                version: "20.3",
+                tags: ["Logging", "Rollback", "Moderation"],
+                docs: "https://docs.coreprotect.net/"
+            },
+            "StaffPlus": {
+                desc: "Staff++ is an all-in-one staff management solution featuring reports, punishments, staff mode, freeze, vanish, and activity monitoring. It includes a modern GUI and extensive customization options.",
+                link: "https://www.spigotmc.org/resources/staff.83562/",
+                version: "3.5.2",
+                tags: ["Moderation", "Staff", "Management"],
+                docs: "https://staffplusplus.gitbook.io/staffplusplus/"
+            },
+            "EconomyShopGUI": {
+                desc: "EconomyShopGUI provides a beautiful GUI shop system with item buying/selling, categories, player shops, and extensive permission controls. It supports multiple economy plugins and includes advanced features like dynamic pricing.",
+                link: "https://www.spigotmc.org/resources/economyshopgui.69927/",
+                version: "2.1.9",
+                tags: ["Shop", "GUI", "Economy"],
+                docs: "https://gitlab.com/superbobby10/economyshopgui/-/wikis/home"
+            },
+            "BountySeekers": {
+                desc: "BountySeekers adds an exciting PvP bounty system where players can place bounties on others. It includes leaderboards, notifications, and integrates with economy plugins for monetary rewards.",
+                link: "https://www.spigotmc.org/resources/bountyseekers.94159/",
+                version: "1.4.7",
+                tags: ["PvP", "Bounty", "Economy"],
+                docs: "https://www.spigotmc.org/resources/bountyseekers.94159/"
+            },
+            "zAuctionHouse": {
+                desc: "zAuctionHouse provides a full auction house system with GUI support for listing and bidding items. Features include expiration notifications, search functionality, and extensive customization options.",
+                link: "https://www.spigotmc.org/resources/zauctionhouse-v3-auction-house-plugin-1-7-1-20.63086/",
+                version: "3.2.1",
+                tags: ["Auction", "Market", "Economy"],
+                docs: "https://www.spigotmc.org/resources/zauctionhouse-v3-auction-house-plugin-1-7-1-20.63086/"
+            },
+            "CoinsEngine": {
+                desc: "CoinsEngine provides a custom coin system with rewards, leaderboards, and shop integration. It includes daily rewards, coin transfers between players, and extensive API for developers.",
+                link: "https://www.spigotmc.org/resources/coinsengine.81357/",
+                version: "1.2.3",
+                tags: ["Currency", "Economy", "Rewards"],
+                docs: "https://www.spigotmc.org/resources/coinsengine.81357/"
+            }
+        };
+
+        // DOM Elements
+        const overlay = document.getElementById('overlay');
+        const popup = document.getElementById('popup');
+        const themeToggle = document.getElementById('themeToggle');
+        const backToTopBtn = document.getElementById('backToTop');
+        const searchInput = document.getElementById('searchInput');
+        
+        // Show plugin popup
+        function showPopup(pluginName) {
+            const plugin = pluginData[pluginName];
+            if (!plugin) return;
+            
+            document.getElementById('popup-title').textContent = pluginName;
+            document.getElementById('popup-desc').textContent = plugin.desc;
+            document.getElementById('popup-version').textContent = plugin.version;
+            document.getElementById('downloadLink').href = plugin.link;
+            document.getElementById('docsLink').href = plugin.docs || plugin.link;
+            
+            // Update tags
+            const tagsContainer = document.getElementById('popup-tags');
+            tagsContainer.innerHTML = '';
+            plugin.tags.forEach(tag => {
+                const span = document.createElement('span');
+                span.className = 'popup-tag';
+                span.textContent = tag;
+                tagsContainer.appendChild(span);
+            });
+            
+            // Show popup and overlay
+            popup.classList.add('active');
+            overlay.classList.add('active');
+            document.body.style.overflow = 'hidden';
+        }
+        
+        // Close popup
+        function closePopup() {
+            popup.classList.remove('active');
+            overlay.classList.remove('active');
+            document.body.style.overflow = '';
+        }
+        
+        // Toggle theme
+        themeToggle.addEventListener('click', () => {
+            document.body.classList.toggle('light-mode');
+            const icon = themeToggle.querySelector('i');
+            if (document.body.classList.contains('light-mode')) {
+                icon.classList.replace('fa-moon', 'fa-sun');
+            } else {
+                icon.classList.replace('fa-sun', 'fa-moon');
+            }
+        });
+        
+        // Back to top button
+        backToTopBtn.addEventListener('click', () => {
+            window.scrollTo({ top: 0, behavior: 'smooth' });
+        });
+        
+        window.addEventListener('scroll', () => {
+            if (window.pageYOffset > 300) {
+                backToTopBtn.style.display = 'flex';
+            } else {
+                backToTopBtn.style.display = 'none';
+            }
+        });
+        
+        // Search functionality
+        searchInput.addEventListener('input', (e) => {
+            const searchTerm = e.target.value.toLowerCase();
+            const pluginCards = document.querySelectorAll('.plugin-card');
+            
+            pluginCards.forEach(card => {
+                const title = card.querySelector('h3').textContent.toLowerCase();
+                const desc = card.querySelector('.plugin-desc').textContent.toLowerCase();
+                const tags = Array.from(card.querySelectorAll('.plugin-tag')).map(tag => tag.textContent.toLowerCase());
+                
+                if (title.includes(searchTerm) || desc.includes(searchTerm) || tags.some(tag => tag.includes(searchTerm))) {
+                    card.style.display = '';
+                    card.style.animation = 'fadeIn 0.5s ease-out';
+                } else {
+                    card.style.display = 'none';
+                }
+            });
+        });
+        
+        // Close popup when clicking overlay
+        overlay.addEventListener('click', closePopup);
+        
+        // Random plugin button functionality
+        document.querySelectorAll('.section-controls button:first-child').forEach(btn => {
+            btn.addEventListener('click', function() {
+                const section = this.closest('.plugin-section');
+                const cards = Array.from(section.querySelectorAll('.plugin-card'));
+                const shuffled = cards.sort(() => 0.5 - Math.random());
+                const grid = section.querySelector('.plugin-grid');
+                
+                // Clear and reappend shuffled cards
+                grid.innerHTML = '';
+                shuffled.forEach(card => grid.appendChild(card));
+                
+                // Add animation
+                cards.forEach((card, i) => {
+                    card.style.animation = 'fadeIn 0.3s ease-out';
+                    card.style.animationDelay = `${i * 0.05}s`;
+                });
+            });
+        });
+        
+        // Expand section button functionality
+        document.querySelectorAll('.section-controls button:last-child').forEach(btn => {
+            btn.addEventListener('click', function() {
+                const section = this.closest('.plugin-section');
+                const grid = section.querySelector('.plugin-grid');
+                
+                if (grid.style.gridTemplateColumns === 'repeat(auto-fill, minmax(280px, 1fr))') {
+                    grid.style.gridTemplateColumns = 'repeat(auto-fill, minmax(400px, 1fr))';
+                    this.innerHTML = '<i class="fas fa-compress"></i> Compact';
+                } else {
+                    grid.style.gridTemplateColumns = 'repeat(auto-fill, minmax(280px, 1fr))';
+                    this.innerHTML = '<i class="fas fa-expand"></i> Expand';
+                }
+            });
+        });
+    </script>
+</body>
+</html>
